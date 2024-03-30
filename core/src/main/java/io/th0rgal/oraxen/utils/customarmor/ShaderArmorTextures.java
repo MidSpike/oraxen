@@ -47,11 +47,19 @@ public class ShaderArmorTextures {
     }
 
     public ShaderArmorTextures() {
-        this(DEFAULT_RESOLUTION);
-    }
+        int parsedResolution;
+        try {
+            parsedResolution = (int) Settings.CUSTOM_ARMOR_SHADER_RESOLUTION.getValue();
 
-    public ShaderArmorTextures(int resolution) {
-        this.resolution = resolution;
+            if (parsedResolution <= 0) throw new NumberFormatException();
+        } catch (Exception e) {
+            Logs.logError("Invalid value for CUSTOM_ARMOR_SHADER_RESOLUTION: " + Settings.CUSTOM_ARMOR_SHADER_RESOLUTION.getValue());
+            Logs.logWarning("Valid values are integers greater than 0");
+            Logs.logWarning("Defaulting to " + DEFAULT_RESOLUTION);
+            parsedResolution = DEFAULT_RESOLUTION;
+        }
+        this.resolution = parsedResolution;
+
         try {
             shaderType = ShaderType.valueOf(Settings.CUSTOM_ARMOR_SHADER_TYPE.toString().toUpperCase());
         } catch (IllegalArgumentException e) {
